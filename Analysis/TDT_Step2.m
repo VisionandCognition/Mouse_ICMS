@@ -1,4 +1,4 @@
-file_loc = 'C:\Users\li\Desktop\Test\Geordi20210406\Geordi20210406.mua.hdf5';
+file_loc = '\\vs02\vandc\ICMS\MANTA\Batou\Ephys\20210413\Batou_20210413Block-1\Batou_20210413Block-1.mua.hdf5';
 trl.time_pre = 1;
 trl.time_post = 2;
 trl.sn_pre = trl.time_pre*t.fs;
