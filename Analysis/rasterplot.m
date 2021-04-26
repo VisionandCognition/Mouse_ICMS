@@ -14,6 +14,7 @@ for i = 1:size(event_matrix,1)
 end
 xlabel('Time(s)');
 ylabel('Trial#');
+ylim([1 size(event_matrix,1)]);
 
 end
 

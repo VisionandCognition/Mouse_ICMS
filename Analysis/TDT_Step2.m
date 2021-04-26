@@ -1,4 +1,4 @@
-file_loc = '\\vs02\vandc\ICMS\MANTA\Batou\Ephys\20210413\Batou_20210413Block-1\Batou_20210413Block-1.mua.hdf5';
+file_loc = '\\vs02\vandc\ICMS\MANTA\B-LY14\Ephys\Geordi_20210420\Geordi_20210420Block-1\Geordi_20210420Block-1.mua.hdf5';
 trl.time_pre = 1;
 trl.time_post = 2;
 trl.sn_pre = trl.time_pre*t.fs;
@@ -36,3 +36,4 @@ for e = 1:elec.total
     end
 end
 
+save([fn.tank fn.block '_MUA' '.mat'], 'trl', 't', 'elec', 'spk', 'fn', 'stim');
