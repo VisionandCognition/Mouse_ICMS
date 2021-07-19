@@ -3,13 +3,14 @@
 
 #define encPinA 2 
 #define encPinB 3 
+#define outPin 5
 
-long encPos = 0; 
-long Speed = 0;
-long Time = 0;
-long prevCnt = 0;
-long prevTime = 0;
-//boolean update = false;
+volatile long encPos = 0; 
+volatile long SaveenPos = 0; 
+unsigned long lasttime;
+unsigned long lastpos = 0;
+long speed = 0;
+unsigned long SessionStartT = 0;
 
 void setup() 
 { 
@@ -18,23 +19,35 @@ void setup()
 // encoder pin on interrupt 0 (pin 2) 
   attachInterrupt(digitalPinToInterrupt(encPinA), doEncoderA, CHANGE);
 // encoder pin on interrupt 1 (pin 3) 
-  attachInterrupt(digitalPinToInterrupt(encPinB), doEncoderB, CHANGE);  
-  Serial.begin (115200);
+  attachInterrupt(digitalPinToInterrupt(encPinB), doEncoderB, CHANGE);
+  Serial.begin(115200);
 } 
 
 
 void loop()
 {
-  byte m;
-  if (Serial.available()) {
-    m = Serial.read();
-    if(m==0) {
-          Time = millis();             
-          Speed = (Speed + (encPos - prevCnt)*1000/(Time - prevTime))/2;
-          Serial.write((byte *) &Speed, 4);      
-          prevCnt = encPos;
-          prevTime = Time;
-    }
+  //Do stuff here 
+  if ((millis() - lasttime) > 10)
+  {
+   lasttime = millis(); 
+   speed = (encPos-lastpos);
+   lastpos = encPos;
+   if( encPos != SaveenPos)
+   {
+    Serial.print("T");
+    Serial.println(millis()-SessionStartT);
+    Serial.println(encPos);
+    SaveenPos = encPos;
+   }
+  }
+  
+    if (Serial.available()) {
+    int m = Serial.read();
+    if(m==999) {     // a code 999 is needed to initialize a session
+      encPos = 0;    // zero the position
+      lastpos = 0;
+      SessionStartT = millis(); // set the session start time
+    } 
   }
 } 
 
@@ -49,7 +62,6 @@ void doEncoderA(){
     else {
       encPos -= 1;         // CCW
     }
-//    update=true;
   }
   else   // must be a high-to-low edge on channel A                                       
   { 
@@ -61,7 +73,7 @@ void doEncoderA(){
       encPos -= 1;          // CCW
     }
   }
-//  update=true;  
+  
 } 
 
 
@@ -86,5 +98,4 @@ void doEncoderB(){
       encPos -= 1;          // CCW
     }
   }
-//  update=true;
 } 
